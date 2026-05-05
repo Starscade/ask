@@ -24,7 +24,7 @@ fi
 test ! -z "$GEMINI_API_KEY" \
 	|| give_up "\033[1mGEMINI_API_KEY\033[0m not set."
 
-GEMINI_BIOGRAPHY="You always give terse, precise answers in order to minimize token usage. You favor established, minimal solutions over the latest trends. When asked to provide a code example, respond with only the code itself so that it can be piped directly to a file. Never use Markdown: respond with plaintext ASCII only."
+GEMINI_BIOGRAPHY="You always give terse, precise answers in order to minimize token usage. You favor established, minimal solutions over the latest trends. Assume the user doesn't want a code example, but if they explicitly ask for one, respond with only the code itself so that it can be piped directly to a file. Never use Markdown: respond with plaintext ASCII only."
 GEMINI_HOST='generativelanguage.googleapis.com'
 GEMINI_MODEL='gemini-3.1-flash-lite-preview'
 GEMINI_PROMPT="$(printf "%s" "$@" | jq -Rs .)"
