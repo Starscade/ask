@@ -67,11 +67,13 @@ GEMINI_JSON='{
 	}
 }'
 
-curl -LsS "$GEMINI_URL" \
+AGENT_RESPONSE=$(curl -LsS "$GEMINI_URL" \
 	-H "x-goog-api-key: ${GEMINI_API_KEY}" \
 	-H 'Content-Type: application/json' \
-	-d "$GEMINI_JSON" \
-	| {
-		jq -er '.candidates[0].content.parts[0].text' \
-		|| give_up 'No more credits!'
-	}
+	-d "$GEMINI_JSON"
+)
+
+echo "$AGENT_RESPONSE" | {
+	jq -er '.candidates[0].content.parts[0].text' \
+	|| give_up 'No more credits!'
+}
