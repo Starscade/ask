@@ -15,9 +15,9 @@ check_command jq
 
 test -n "$1" || give_up "You didn't ask anything."
 
-if test -s ask.env; then
+if test -s .env; then
 	set -a
-	. ask.env
+	. .env
 	set +a
 fi
 
