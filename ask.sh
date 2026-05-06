@@ -40,11 +40,6 @@ GEMINI_JSON='{
 			]
 		}
 	],
-	"generationConfig": {
-		"thinkingConfig": {
-			"thinkingLevel": "minimal"
-		}
-	},
 	"safetySettings": [
 		{
 			"category": "HARM_CATEGORY_DANGEROUS_CONTENT",
