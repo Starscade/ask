@@ -78,4 +78,8 @@ curl -LsS "$GEMINI_URL" \
 	-H 'Content-Type: application/json' \
 	-d "$GEMINI_JSON" \
 	| jq -er \
-		'.candidates[0].content.parts[0].text // .error.message'
+	'(.candidates[0].content.parts[0].text // .error.message) // empty' \
+		|| {
+			printf "\n \033[1;31mERR\033[0m: Unfamiliar JSON schema.\n\n"
+			exit 1
+		}
