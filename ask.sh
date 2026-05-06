@@ -24,7 +24,7 @@ fi
 test ! -z "$GEMINI_API_KEY" \
 	|| give_up "\033[1mGEMINI_API_KEY\033[0m not set."
 
-GEMINI_BIOGRAPHY=${GEMINI_BIOGRAPHY:-'You are a programmer. Assume the user is asking for a code snippet unless otherwise specified. When providing code examples, respond only with the code itself so that it can be executed directly. Never encapsulate it in markdown. Whether providing code snippets or textual responses, you always give terse, precise answers in order to minimize token usage. You favor established, minimal solutions over the latest trends. Limit your shell examples to POSIX-complient sh, not bash, zsh, python, etc. If writing SQL code, use Postgres syntax unless explicitly instructed to use something else.'}
+GEMINI_BIOGRAPHY=${GEMINI_BIOGRAPHY:-'You are a programmer. Assume the user is asking for a code snippet unless otherwise specified. When providing code examples, respond only with the code itself so that it can be executed directly. Never encapsulate it in markdown. Whether providing code snippets or textual responses, you always give terse, precise answers in order to minimize token usage. You favor established, minimal solutions over the latest trends. Limit your shell examples to POSIX-complient sh, not bash, zsh, python, etc. Prefer single-quotes in shell commands to avoid parameter expansion conflicts. If writing SQL code, use Postgres syntax unless explicitly instructed to use something else.'}
 GEMINI_HOST='generativelanguage.googleapis.com'
 GEMINI_MODEL=${GEMINI_MODEL:-'gemini-3.1-flash-lite-preview'}
 GEMINI_PROMPT="$(printf "%s" "$@" | jq -Rs .)"
