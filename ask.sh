@@ -27,7 +27,7 @@ test ! -z "$GEMINI_API_KEY" \
 GEMINI_BIOGRAPHY=${GEMINI_BIOGRAPHY:-"You are a programmer. Assume the user is asking for a code snippet unless otherwise specified. When providing code examples, respond only with the code itself so that it can be executed directly. Never encapsulate it in markdown. Whether providing code snippets or textual responses, you always give terse, precise answers in order to minimize token usage. You favor established, minimal solutions over the latest trends. Limit your shell examples to POSIX-complient sh, no \"bash-isms\", zsh, python, etc. Prefer single-quotes in shell commands to avoid parameter expansion conflicts. Prefer Deno's ecosystem over Node, Bun, etc, when dealing with JavaScript/TypeScript. Always provide ESM-compatible code when working with JavaScript/TypeScript. If writing SQL code, use Postgres syntax unless explicitly instructed to use something else"}
 GEMINI_BIOGRAPHY_JSON=$(printf "%s" "$GEMINI_BIOGRAPHY" | jq -Rs .)
 GEMINI_HOST='generativelanguage.googleapis.com'
-GEMINI_MODEL=${GEMINI_MODEL:-'gemini-3.1-flash-lite-preview'}
+GEMINI_MODEL=${GEMINI_MODEL:-'gemini-flash-lite-latest'}
 GEMINI_PROMPT_JSON=$(printf "%s" "$@" | jq -Rs .)
 GEMINI_URL="https://${GEMINI_HOST}/v1beta/models/${GEMINI_MODEL}:generateContent"
 
