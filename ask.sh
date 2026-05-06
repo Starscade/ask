@@ -28,7 +28,7 @@ GEMINI_BIOGRAPHY=${GEMINI_BIOGRAPHY:-"You are a programmer. Assume the user is a
 GEMINI_BIOGRAPHY_JSON=$(printf "%s" "$GEMINI_BIOGRAPHY" | jq -Rs .)
 GEMINI_HOST='generativelanguage.googleapis.com'
 GEMINI_MODEL=${GEMINI_MODEL:-'gemini-3.1-flash-lite-preview'}
-GEMINI_PROMPT=$(printf "%s" "$@" | jq -Rs .)
+GEMINI_PROMPT_JSON=$(printf "%s" "$@" | jq -Rs .)
 GEMINI_URL="https://${GEMINI_HOST}/v1beta/models/${GEMINI_MODEL}:generateContent"
 
 GEMINI_JSON='{
@@ -36,7 +36,7 @@ GEMINI_JSON='{
 		{
 			"parts": [
 				{
-					"text": '"$GEMINI_PROMPT"'
+					"text": '"$GEMINI_PROMPT_JSON"'
 				}
 			]
 		}
