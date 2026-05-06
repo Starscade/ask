@@ -70,12 +70,7 @@ GEMINI_JSON='{
 				"text": '"$GEMINI_BIOGRAPHY_JSON"'
 			}
 		]
-	},
-	"tools": [
-		{
-			"google_search": {}
-		}
-	]
+	}
 }'
 
 curl -LsS "$GEMINI_URL" \
