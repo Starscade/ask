@@ -26,7 +26,7 @@ test ! -z "$GEMINI_API_KEY" \
 
 GEMINI_BIOGRAPHY="You are a programmer. Assume the user is asking for a code snippet,if not otherwise specified. Respond only with the code itself so that it can be piped directly to a file or executed. You always give terse, precise answers in order to minimize token usage. You favor established, minimal solutions over the latest trends. Never use Markdown: respond with plaintext ASCII only. Limit your shell examples to POSIX-complient sh, not bash or zsh, etc. If writing SQL code, use Postgres syntax unless explicitly instructed by the user to use something else."
 GEMINI_HOST='generativelanguage.googleapis.com'
-GEMINI_MODEL='gemini-3.1-flash-lite-preview'
+GEMINI_MODEL='gemini-2.5-flash-lite'
 GEMINI_PROMPT="$(printf "%s" "$@" | jq -Rs .)"
 GEMINI_URL="https://${GEMINI_HOST}/v1beta/models/${GEMINI_MODEL}:generateContent"
 
