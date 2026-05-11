@@ -77,6 +77,8 @@ curl -LsS "$GEMINI_URL" \
 	-H "x-goog-api-key: ${GEMINI_API_KEY}" \
 	-H 'Content-Type: application/json' \
 	-d "$GEMINI_JSON" \
+	| grep '^data: ' \
+	| sed 's/^data: //' \
 	| jq -er \
 	'(.candidates[0].content.parts[0].text // .error.message) // empty' \
 		|| {
