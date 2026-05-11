@@ -73,7 +73,7 @@ GEMINI_JSON='{
 	}
 }'
 
-curl -LsS "$GEMINI_URL" \
+curl -LsS "$GEMINI_URL?alt=sse" \
 	-H "x-goog-api-key: ${GEMINI_API_KEY}" \
 	-H 'Content-Type: application/json' \
 	-d "$GEMINI_JSON" \
