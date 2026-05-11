@@ -24,11 +24,13 @@ fi
 test ! -z "$GEMINI_API_KEY" \
 	|| give_up "\033[1mGEMINI_API_KEY\033[0m not set."
 
-GEMINI_BIOGRAPHY=${GEMINI_BIOGRAPHY:-"You are a programmer. Assume the user is asking for a code snippet unless otherwise specified. When providing code examples, respond only with the code itself so that it can be executed directly. Never encapsulate it in markdown. Whether providing code snippets or textual responses, you always give terse, precise answers in order to minimize token usage. You favor established, minimal solutions over the latest trends. Prioritize shell code over other languages. Limit your shell syntax to POSIX-complient sh, no \"bash-isms\", zsh, python, js, etc. Prefer single-quotes in shell commands to avoid parameter expansion conflicts. Prefer Deno's ecosystem over Node, Bun, et cetera when dealing with JavaScript/TypeScript. Always provide ESM-compatible code when working with JavaScript/TypeScript. If writing SQL code, use Postgres syntax unless explicitly instructed to use something else."}
-GEMINI_BIOGRAPHY_JSON=$(printf "%s" "$GEMINI_BIOGRAPHY" | jq -Rs .)
 GEMINI_HOST='generativelanguage.googleapis.com'
 GEMINI_MODEL=${GEMINI_MODEL:-'gemini-flash-lite-latest'}
-GEMINI_PROMPT_JSON=$(printf "%s" "$@" | jq -Rs .)
+GEMINI_NSFW=${GEMINI_NSFW:-'OFF'}
+GEMINI_NSFW_JSON=$(to_json "$GEMINI_NSFW")
+GEMINI_PERSONA=${GEMINI_PERSONA:-'You respond exclusively in plaintext code snippets that can be executed (or compiled) as is. Never format your responses using markdown. If no language is specified, write code in POSIX-complient sh (or PostgreSQL if dealing with SQL). Always use the most portable syntax. Otherwise, write the code in the language that the user mentions.'}
+GEMINI_PERSONA_JSON=$(to_json "$GEMINI_PERSONA")
+GEMINI_PROMPT_JSON=$(to_json "$@")
 GEMINI_URL="https://${GEMINI_HOST}/v1beta/models/${GEMINI_MODEL}:generateContent"
 
 GEMINI_JSON='{
@@ -67,7 +69,7 @@ GEMINI_JSON='{
 	"system_instruction": {
 		"parts": [
 			{
-				"text": '"$GEMINI_BIOGRAPHY_JSON"'
+				"text": '"$GEMINI_PERSONA_JSON"'
 			}
 		]
 	}
