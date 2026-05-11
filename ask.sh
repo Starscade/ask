@@ -51,7 +51,7 @@ GEMINI_JSON='{
 	"safetySettings": [
 		{
 			"category": "HARM_CATEGORY_DANGEROUS_CONTENT",
-			"threshold": "OFF"
+			"threshold": '"${GEMINI_NSFW_JSON}"'
 		},
 		{
 			"category": "HARM_CATEGORY_HARASSMENT",
