@@ -28,67 +28,36 @@ fi
 test ! -z "$GEMINI_API_KEY" \
 	|| give_up "\033[1mGEMINI_API_KEY\033[0m not set."
 
-GEMINI_HOST='generativelanguage.googleapis.com'
 GEMINI_MODEL=${GEMINI_MODEL:-'gemini-flash-lite-latest'}
-GEMINI_NSFW=${GEMINI_NSFW:-'OFF'}
-GEMINI_NSFW_JSON=$(to_json "$GEMINI_NSFW")
 GEMINI_PERSONA=${GEMINI_PERSONA:-'You respond exclusively in plaintext code snippets that can be executed (or compiled) as is. Never format your responses using markdown. If no language is specified, write code in POSIX-complient sh (or PostgreSQL if dealing with SQL). Always use the most portable syntax. Otherwise, write the code in the language that the user mentions.'}
 GEMINI_PERSONA_JSON=$(to_json "$GEMINI_PERSONA")
-GEMINI_PROMPT_JSON=$(to_json "$@")
-GEMINI_URL="https://${GEMINI_HOST}/v1beta/models/${GEMINI_MODEL}:streamGenerateContent"
+GEMINI_URL='https://generativelanguage.googleapis.com/v1beta/interactions?alt=sse'
+USER_PROMPT_JSON="$(to_json "$@")"
 
-GEMINI_JSON='{
-	"contents": [
-		{
-			"parts": [
-				{
-					"text": '"$GEMINI_PROMPT_JSON"'
-				}
-			]
-		}
-	],
-	"generationConfig": {
-		"thinkingConfig": {
-			"thinkingLevel": "MINIMAL"
-		}
+RAW_OBJ='{
+	"generation_config": {
+		"thinking_level": "low"
 	},
-	"safetySettings": [
+	"input": [
 		{
-			"category": "HARM_CATEGORY_DANGEROUS_CONTENT",
-			"threshold": '"${GEMINI_NSFW_JSON}"'
-		},
-		{
-			"category": "HARM_CATEGORY_HARASSMENT",
-			"threshold": "OFF"
-		},
-		{
-			"category": "HARM_CATEGORY_HATE_SPEECH",
-			"threshold": "OFF"
-		},
-		{
-			"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-			"threshold": "OFF"
+			"text": '"$USER_PROMPT_JSON"',
+			"type": "text"
 		}
 	],
-	"system_instruction": {
-		"parts": [
-			{
-				"text": '"$GEMINI_PERSONA_JSON"'
-			}
-		]
-	}
+	"model": "'"$GEMINI_MODEL"'",
+	"stream": true,
+	"system_instruction": '"$GEMINI_PERSONA_JSON"'
 }'
 
-curl -LsS "$GEMINI_URL?alt=sse" \
+GEMINI_JSON="$(echo "$RAW_OBJ" | jq -c .)"
+
+curl -sSX POST "$GEMINI_URL" \
 	-H "x-goog-api-key: ${GEMINI_API_KEY}" \
 	-H 'Content-Type: application/json' \
 	-d "$GEMINI_JSON" \
 	--no-buffer \
-	| grep '^data: ' \
-	| sed 's/^data: //' \
-	| jq -er \
-	'(.candidates[0].content.parts[0].text // .error.message) // empty' \
-		|| {
-			printf "\n \033[1;31mERR\033[0m: Unfamiliar JSON schema.\n\n"
-			exit 1
-		}
+| grep --line-buffered '^data: ' \
+| sed -u 's/^data: // ; /^$/d' \
+| jq --unbuffered -ej \
+	'(.delta.text // .error.message) // empty' \
+	2>/dev/null
