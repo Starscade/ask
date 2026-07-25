@@ -35,7 +35,7 @@ GEMINI_NSFW_JSON=$(to_json "$GEMINI_NSFW")
 GEMINI_PERSONA=${GEMINI_PERSONA:-'You respond exclusively in plaintext code snippets that can be executed (or compiled) as is. Never format your responses using markdown. If no language is specified, write code in POSIX-complient sh (or PostgreSQL if dealing with SQL). Always use the most portable syntax. Otherwise, write the code in the language that the user mentions.'}
 GEMINI_PERSONA_JSON=$(to_json "$GEMINI_PERSONA")
 GEMINI_PROMPT_JSON=$(to_json "$@")
-GEMINI_URL="https://${GEMINI_HOST}/v1beta/models/${GEMINI_MODEL}:generateContent"
+GEMINI_URL="https://${GEMINI_HOST}/v1beta/models/${GEMINI_MODEL}:streamGenerateContent"
 
 GEMINI_JSON='{
 	"contents": [
@@ -83,6 +83,7 @@ curl -LsS "$GEMINI_URL?alt=sse" \
 	-H "x-goog-api-key: ${GEMINI_API_KEY}" \
 	-H 'Content-Type: application/json' \
 	-d "$GEMINI_JSON" \
+	--no-buffer \
 	| grep '^data: ' \
 	| sed 's/^data: //' \
 	| jq -er \
