@@ -26,6 +26,9 @@ LOCAL_BIN_DIR=~/.local/bin
 INSTALL_PATH="${LOCAL_BIN_DIR}/ask"
 TRANSCRIPT_FILE=/tmp/transcript.json
 
+# We will collect input items as a JSON array string using jq
+INPUT_ITEMS='[]'
+
 while [ $# -gt 0 ]; do
 	case "$1" in
 		--install)
@@ -50,6 +53,18 @@ while [ $# -gt 0 ]; do
 			shift
 			ATTACH_FILE="$1"
 			shift
+			test -f "$ATTACH_FILE" || give_up "Attached file not found: $ATTACH_FILE"
+			
+			# Detect mime type or fallback to text/plain, read file content as base64
+			MIME_TYPE=$(file -b --mime-type "$ATTACH_FILE" 2>/dev/null || echo "text/plain")
+			FILE_DATA=$(base64 < "$ATTACH_FILE" | tr -d '\n')
+			
+			# Append document/file part to input array via jq
+			INPUT_ITEMS=$(jq -cn \
+				--argjson arr "$INPUT_ITEMS" \
+				--arg data "$FILE_DATA" \
+				--arg mime "$MIME_TYPE" \
+				'$arr + [{"type": "document", "data": $data, "mime_type": $mime}]')
 			;;
 		--modality | -m)
 			shift
@@ -72,8 +87,14 @@ done
 RAW_USER_PROMPT="$*"
 test ! -t 0 && RAW_USER_PROMPT="${RAW_USER_PROMPT}\n\n$(cat)"
 
-test -z "$RAW_USER_PROMPT" \
-	&& give_up "You didn't ask anything."
+# Append text prompt if present
+test -n "$RAW_USER_PROMPT" && INPUT_ITEMS=$(jq -cn \
+	--argjson arr "$INPUT_ITEMS" \
+	--arg prompt "$RAW_USER_PROMPT" \
+	'$arr + [{"type": "text", "text": $prompt}]')
+
+test "$(echo "$INPUT_ITEMS" | jq length)" -eq 0 \
+	&& give_up "You didn't ask anything or attach any files."
 
 test -s .env && {
 	set -a
@@ -86,29 +107,21 @@ test -z "$GEMINI_API_KEY" \
 
 TOPIC_ID="$(get_topic_id "$TRANSCRIPT_FILE")"
 GEMINI_MODEL=${GEMINI_MODEL:-'gemini-flash-lite-latest'}
-GEMINI_PERSONA=${GEMINI_PERSONA:-'You respond exclusively in plaintext code snippets that can be executed (or compiled) as is. Never format your responses using markdown. If no language is specified, write code in POSIX-complient sh (or PostgreSQL if dealing with SQL). Always use the most portable syntax. Otherwise, write the code in the language that the user mentions.'}
-GEMINI_PERSONA_JSON=$(to_json "$GEMINI_PERSONA")
+GEMINI_PERSONA=${GEMINI_PERSONA:-'You respond exclusively in plaintext code snippets that can be executed (or compiled) as is. Never format your responses using markdown. If no language is specified, write code in POSIX-compliant sh (or PostgreSQL if dealing with SQL). Always use the most portable syntax. Otherwise, write the code in the language that the user mentions.'}
 GEMINI_URL='https://generativelanguage.googleapis.com/v1beta/interactions?alt=sse'
-PREVIOUS_INTERACTION=
-USER_PROMPT_JSON="$(to_json "$RAW_USER_PROMPT")"
 
 GEMINI_JSON=$(jq -cn \
 	--arg modality "${GEMINI_MODALITY:-text}" \
 	--arg model "$GEMINI_MODEL" \
 	--arg persona "$GEMINI_PERSONA" \
 	--arg prev_id "$TOPIC_ID" \
-	--arg prompt "$RAW_USER_PROMPT" \
+	--argjson input "$INPUT_ITEMS" \
 	--argjson has_prev "${GAIA_RELATED:-false}" \
 	'{
 		generation_config: {
 			thinking_level: "low"
 		},
-		input: [
-			{
-				text: $prompt,
-				type: "text"
-			}
-		],
+		input: $input,
 		model: $model,
 		response_modalities: [
 			$modality
