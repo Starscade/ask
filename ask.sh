@@ -22,6 +22,53 @@ to_json() {
 check_command curl
 check_command jq
 
+LOCAL_BIN_DIR=~/.local/bin
+INSTALL_PATH="${LOCAL_BIN_DIR}/ask"
+TRANSCRIPT_FILE=/tmp/transcript.json
+
+while [ $# -gt 0 ]; do
+	case "$1" in
+		--install)
+			mkdir -p "$LOCAL_BIN_DIR"
+			cp -iv "$0" "$INSTALL_PATH"
+			exit
+			;;
+		--uninstall)
+			rm -iv "$INSTALL_PATH"
+			exit
+			;;
+		--echo)
+			head -n -1 "$TRANSCRIPT_FILE" \
+				| jq -jr '.delta.text // empty'
+			exit
+			;;
+		--related | -r)
+			GAIA_RELATED=true
+			shift
+			;;
+		--attach | -a)
+			shift
+			ATTACH_FILE="$1"
+			shift
+			;;
+		--modality | -m)
+			shift
+			MODALITY="$1"
+			shift
+			;;
+		--)
+			shift
+			break
+			;;
+		-*)
+			break
+			;;
+		*)
+			break
+			;;
+	esac
+done
+
 RAW_USER_PROMPT="$*"
 test ! -t 0 && RAW_USER_PROMPT="${RAW_USER_PROMPT}\n\n$(cat)"
 
