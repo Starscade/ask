@@ -53,17 +53,24 @@ while [ $# -gt 0 ]; do
 			ATTACH_FILE="$1"
 			shift
 			test -f "$ATTACH_FILE" || give_up "Attached file not found: $ATTACH_FILE"
-			
-			# Detect mime type or fallback to text/plain, read file content as base64
 			MIME_TYPE=$(file -b --mime-type "$ATTACH_FILE" 2>/dev/null || echo "text/plain")
-			FILE_DATA=$(base64 < "$ATTACH_FILE" | tr -d '\n')
-			
-			# Append document/file part to input array via jq
-			INPUT_ITEMS=$(jq -cn \
-				--argjson arr "$INPUT_ITEMS" \
-				--arg data "$FILE_DATA" \
-				--arg mime "$MIME_TYPE" \
-				'$arr + [{"type": "document", "data": $data, "mime_type": $mime}]')
+			case "$MIME_TYPE" in
+				image/*)
+					FILE_DATA=$(base64 < "$ATTACH_FILE" | tr -d '\n')
+					INPUT_ITEMS=$(jq -cn \
+						--argjson arr "$INPUT_ITEMS" \
+						--arg data "$FILE_DATA" \
+						--arg mime "$MIME_TYPE" \
+						'$arr + [{"type": "image", "data": $data, "mime_type": $mime, "resolution": "low"}]')
+					;;
+				*)
+					INPUT_ITEMS=$(jq -cn \
+						--argjson arr "$INPUT_ITEMS" \
+						--rawfile data "$ATTACH_FILE" \
+						--arg mime "$MIME_TYPE" \
+						'$arr + [{"type": "text", "text": $data}]')
+					;;
+			esac
 			;;
 		--modality | -m)
 			shift
