@@ -48,6 +48,21 @@ while [ $# -gt 0 ]; do
 				| jq -jr '.delta.text // empty'
 			exit
 			;;
+		--dotenv)
+			shift
+			DOTENV_FILE="$1"
+			shift
+			test -s "$DOTENV_FILE" && {
+				set -a
+				. "$DOTENV_FILE"
+				set +a
+			} || give_up
+			;;
+		--persona)
+			shift
+			GAIA_PERSONA="$1"
+			shift
+			;;
 		--related | -r)
 			GAIA_RELATED=true
 			shift
@@ -105,12 +120,6 @@ test -n "$RAW_USER_PROMPT" && INPUT_ITEMS=$(jq -cn \
 
 test "$(echo "$INPUT_ITEMS" | jq 'length // 0')" -eq 0 \
 	&& give_up "You didn't ask anything or attach any files."
-
-test -s .env && {
-	set -a
-	. .env
-	set +a
-}
 
 test -z "$GEMINI_API_KEY" \
 	&& give_up "\033[1mGEMINI_API_KEY\033[0m not set."
