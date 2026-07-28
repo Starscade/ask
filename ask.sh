@@ -22,18 +22,21 @@ to_json() {
 check_command curl
 check_command jq
 
-LOCAL_BIN_DIR=~/.local/bin
-INSTALL_PATH="${LOCAL_BIN_DIR}/ask"
 TRANSCRIPT_FILE=/tmp/transcript.json
 PERSONA=${PERSONA:-'You respond exclusively in plaintext code snippets that can be executed (or compiled) as is. Never format your responses using markdown. If no language is specified, write code in POSIX-compliant sh (or PostgreSQL if dealing with SQL). Always use the most portable syntax. Otherwise, write the code in the language that the user mentions.'}
+GEMINI_INTELLECT=${GEMINI_INTELLECT:-'low'}
+GEMINI_MODEL=${GEMINI_MODEL:-'gemini-flash-lite-latest'}
 
 INPUT_ITEMS='[]'
 
 while [ $# -gt 0 ]; do
 	case "$1" in
 		--install)
+			LOCAL_BIN_DIR=~/.local/bin
+			INSTALL_PATH="${LOCAL_BIN_DIR}/ask"
 			mkdir -p "$LOCAL_BIN_DIR"
 			cp -iv "$0" "$INSTALL_PATH"
+			chmod +x "$INSTALL_PATH"
 			exit
 			;;
 		--uninstall)
@@ -59,9 +62,19 @@ while [ $# -gt 0 ]; do
 				set +a
 			} || give_up
 			;;
+		--model)
+			shift
+			GEMINI_MODEL="$1"
+			shift
+			;;
 		--persona)
 			shift
 			PERSONA="$1"
+			shift
+			;;
+		--intellect)
+			shift
+			GEMINI_INTELLECT="$1"
 			shift
 			;;
 		--related | -r)
@@ -128,9 +141,9 @@ test -z "$GEMINI_API_KEY" \
 TOPIC_ID=""
 test -f "$TRANSCRIPT_FILE" \
 	&& TOPIC_ID="$(get_topic_id "$TRANSCRIPT_FILE")"
-GEMINI_MODEL=${GEMINI_MODEL:-'gemini-flash-lite-latest'}
 GEMINI_URL='https://generativelanguage.googleapis.com/v1beta/interactions?alt=sse'
 GEMINI_JSON=$(jq -cn \
+	--arg intellect "${GEMINI_INTELLECT:-low}" \
 	--arg modality "${GEMINI_MODALITY:-text}" \
 	--arg model "$GEMINI_MODEL" \
 	--arg persona "$PERSONA" \
@@ -139,7 +152,7 @@ GEMINI_JSON=$(jq -cn \
 	--argjson has_prev "${PRESERVE_TOPIC:-false}" \
 	'{
 		generation_config: {
-			thinking_level: "low"
+			thinking_level: $intellect
 		},
 		input: $input,
 		model: $model,
