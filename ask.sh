@@ -153,4 +153,4 @@ curl -sSX POST "$GEMINI_URL" \
 | tee "$TRANSCRIPT_FILE" \
 | jq --unbuffered -ej \
 	'(.delta.text // .error.message) // empty' \
-	2>/dev/null
+	2>/dev/null || true
