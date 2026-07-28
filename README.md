@@ -7,20 +7,25 @@ A POSIX-compliant shell script for Google Gemini.
 
 ###### BASIC
 ```sh
-export GEMINI_API_KEY=<your_key>
-ask.sh Hello, there.
+export GEMINI_API_KEY= # Your key ...
+ask.sh "Hello, there."
 ```
 
 ###### INSTALL
 ```sh
 ask.sh --install
-ask Hello, there.
+ask "Hello, there."
 ```
 
 ###### PRESERVE CONTEXT
 ```sh
-ask I like root beer.
-ask --related Do I like root beer?
+ask "I like root beer."
+ask --related "Do I like root beer?"
+```
+
+###### ATTACH A FILE
+```sh
+ask --attach README.md "Summarize this."
 ```
 
 ###### PRINT LAST RESPONSE
