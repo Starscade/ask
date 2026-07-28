@@ -99,7 +99,7 @@ test -n "$RAW_USER_PROMPT" && INPUT_ITEMS=$(jq -cn \
 	--arg prompt "$RAW_USER_PROMPT" \
 	'$arr + [{"type": "text", "text": $prompt}]')
 
-test "$(echo "$INPUT_ITEMS" | jq length)" -eq 0 \
+test "$(echo "$INPUT_ITEMS" | jq 'length // 0')" -eq 0 \
 	&& give_up "You didn't ask anything or attach any files."
 
 test -s .env && {
