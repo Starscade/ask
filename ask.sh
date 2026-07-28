@@ -33,7 +33,7 @@ while [ $# -gt 0 ]; do
 	case "$1" in
 		--install)
 			LOCAL_BIN_DIR=~/.local/bin
-			INSTALL_PATH="${LOCAL_BIN_DIR}/ai"
+			INSTALL_PATH="${LOCAL_BIN_DIR}/ask"
 			mkdir -p "$LOCAL_BIN_DIR"
 			cp -iv "$0" "$INSTALL_PATH"
 			chmod +x "$INSTALL_PATH"
