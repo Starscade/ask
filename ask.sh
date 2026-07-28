@@ -26,7 +26,6 @@ LOCAL_BIN_DIR=~/.local/bin
 INSTALL_PATH="${LOCAL_BIN_DIR}/ask"
 TRANSCRIPT_FILE=/tmp/transcript.json
 
-# We will collect input items as a JSON array string using jq
 INPUT_ITEMS='[]'
 
 while [ $# -gt 0 ]; do
