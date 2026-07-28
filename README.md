@@ -3,7 +3,7 @@
 A POSIX-compliant shell script for Google Gemini.
 
 ---
-#### USAGE
+### USAGE:
 
 ###### BASIC
 ```sh
