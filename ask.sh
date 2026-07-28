@@ -33,6 +33,25 @@ INPUT_ITEMS='[]'
 
 while [ $# -gt 0 ]; do
 	case "$1" in
+		--help | -h)
+			printf "\n  \033[1mUSAGE\033[0m: ask [flags] [prompt]\n"
+			printf "  \033[1mFLAGS\033[0m:\n\n"
+			printf "%s\n" \
+			'    --install          Install script to ~/.local/bin/ask' \
+			'    --uninstall        Remove installed script and transcript' \
+			'    --forget           Clear chat history' \
+			'    --echo             Print the last AI response' \
+			'    --dotenv FILE      Load environment variables from FILE' \
+			'    --model MODEL      Set Gemini model name' \
+			'    --persona TEXT     Set system instruction persona' \
+			'    --intellect LEVEL  Set thinking level (low/high)' \
+			'    -r, --related      Preserve topic history / context' \
+			'    -a, --attach FILE  Attach text or image file' \
+			'    -m, --modality     Set response modality' \
+			'    --help             Display this help message'
+			echo
+			exit
+			;;
 		--install)
 			mkdir -p "$LOCAL_BIN_DIR"
 			cp -iv "$0" "$INSTALL_PATH"
