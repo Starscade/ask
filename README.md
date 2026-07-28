@@ -29,7 +29,7 @@ ask --attach README.md "Summarize this."
 
 ###### UNIX PIPES
 ```sh
-cat *.js | ask "Consolidate these into a single TypeScript module." > foo.ts
+cat *.js | ask "Consolidate these into a single TypeScript module." > mod.ts
 ```
 
 ###### PRINT LAST RESPONSE
