@@ -111,7 +111,9 @@ test -s .env && {
 test -z "$GEMINI_API_KEY" \
 	&& give_up "\033[1mGEMINI_API_KEY\033[0m not set."
 
-TOPIC_ID="$(get_topic_id "$TRANSCRIPT_FILE")"
+TOPIC_ID=""
+test -f "$TRANSCRIPT_FILE" \
+	&& TOPIC_ID="$(get_topic_id "$TRANSCRIPT_FILE")"
 GEMINI_MODEL=${GEMINI_MODEL:-'gemini-flash-lite-latest'}
 GEMINI_PERSONA=${GEMINI_PERSONA:-'You respond exclusively in plaintext code snippets that can be executed (or compiled) as is. Never format your responses using markdown. If no language is specified, write code in POSIX-compliant sh (or PostgreSQL if dealing with SQL). Always use the most portable syntax. Otherwise, write the code in the language that the user mentions.'}
 GEMINI_URL='https://generativelanguage.googleapis.com/v1beta/interactions?alt=sse'
