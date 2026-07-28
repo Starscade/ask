@@ -65,7 +65,7 @@ while [ $# -gt 0 ]; do
 			shift
 			;;
 		--related | -r)
-			GAIA_RELATED=true
+			PRESERVE_TOPIC=true
 			shift
 			;;
 		--attach | -a)
@@ -137,7 +137,7 @@ GEMINI_JSON=$(jq -cn \
 	--arg persona "$PERSONA" \
 	--arg prev_id "$TOPIC_ID" \
 	--argjson input "$INPUT_ITEMS" \
-	--argjson has_prev "${GAIA_RELATED:-false}" \
+	--argjson has_prev "${PRESERVE_TOPIC:-false}" \
 	'{
 		generation_config: {
 			thinking_level: "low"
