@@ -61,7 +61,7 @@ while [ $# -gt 0 ]; do
 			;;
 		--persona)
 			shift
-			GAIA_PERSONA="$1"
+			PERSONA="$1"
 			shift
 			;;
 		--related | -r)
@@ -130,7 +130,6 @@ test -f "$TRANSCRIPT_FILE" \
 	&& TOPIC_ID="$(get_topic_id "$TRANSCRIPT_FILE")"
 GEMINI_MODEL=${GEMINI_MODEL:-'gemini-flash-lite-latest'}
 GEMINI_URL='https://generativelanguage.googleapis.com/v1beta/interactions?alt=sse'
-
 GEMINI_JSON=$(jq -cn \
 	--arg modality "${GEMINI_MODALITY:-text}" \
 	--arg model "$GEMINI_MODEL" \
