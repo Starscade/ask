@@ -36,7 +36,11 @@ while [ $# -gt 0 ]; do
 			exit
 			;;
 		--uninstall)
-			rm -iv "$INSTALL_PATH"
+			rm -iv "$INSTALL_PATH" "$TRANSCRIPT_FILE"
+			exit
+			;;
+		--forget)
+			rm -v "$TRANSCRIPT_FILE"
 			exit
 			;;
 		--echo)
