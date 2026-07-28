@@ -3,9 +3,8 @@
 A POSIX-compliant shell script for Google Gemini.
 
 ---
-### USAGE:
+### USAGE
 
-###### BASIC
 ```sh
 export GEMINI_API_KEY= # Your key ...
 ask.sh "Hello, there."
@@ -26,6 +25,11 @@ ask --related "Do I like root beer?"
 ###### ATTACH A FILE
 ```sh
 ask --attach README.md "Summarize this."
+```
+
+###### UNIX PIPES
+```sh
+cat *.js | ask "Consolidate these into a single TypeScript module." > foo.ts
 ```
 
 ###### PRINT LAST RESPONSE
