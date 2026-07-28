@@ -53,9 +53,9 @@ while [ $# -gt 0 ]; do
 			exit
 			;;
 		--install)
-			mkdir -p "$LOCAL_BIN_DIR"
+			mkdir -pv "$LOCAL_BIN_DIR"
 			cp -iv "$0" "$INSTALL_PATH"
-			chmod +x "$INSTALL_PATH"
+			chmod -v +x "$INSTALL_PATH"
 			exit
 			;;
 		--uninstall)
