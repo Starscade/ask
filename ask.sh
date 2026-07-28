@@ -22,6 +22,8 @@ to_json() {
 check_command curl
 check_command jq
 
+LOCAL_BIN_DIR=~/.local/bin
+INSTALL_PATH="${LOCAL_BIN_DIR}/ask"
 TRANSCRIPT_FILE=/tmp/transcript.json
 PERSONA=${PERSONA:-'You respond exclusively in plaintext code snippets that can be executed (or compiled) as is. Never format your responses using markdown. If no language is specified, write code in POSIX-compliant sh (or PostgreSQL if dealing with SQL). Always use the most portable syntax. Otherwise, write the code in the language that the user mentions.'}
 GEMINI_INTELLECT=${GEMINI_INTELLECT:-'low'}
@@ -32,8 +34,6 @@ INPUT_ITEMS='[]'
 while [ $# -gt 0 ]; do
 	case "$1" in
 		--install)
-			LOCAL_BIN_DIR=~/.local/bin
-			INSTALL_PATH="${LOCAL_BIN_DIR}/ask"
 			mkdir -p "$LOCAL_BIN_DIR"
 			cp -iv "$0" "$INSTALL_PATH"
 			chmod +x "$INSTALL_PATH"
