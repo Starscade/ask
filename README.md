@@ -7,13 +7,13 @@ A POSIX-compliant shell script for Google Gemini.
 
 ```sh
 export GEMINI_API_KEY= # Your key ...
-ask.sh "Hello, there."
+ask.sh 'Ahoy!'
 ```
 
 ###### INSTALL
 ```sh
-ask.sh --install
-ask "Hello, there."
+curl -fLsS ask.angus.sh/ask.sh > ~/.local/bin/ask
+ask 'Ahoy!'
 ```
 
 ###### PRESERVE CONTEXT
