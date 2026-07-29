@@ -15,10 +15,6 @@ give_up() {
 	&& exit 1
 }
 
-to_json() {
-	printf "%s" "$1" | jq -Rs .
-}
-
 check_command curl
 check_command jq
 
