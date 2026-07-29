@@ -207,9 +207,9 @@ GEMINI_JSON=$(jq -cn \
 	} + if $has_prev and $prev_id != "" then {previous_interaction_id: $prev_id} else {} end'
 )
 
-curl -sSX POST "$GEMINI_URL" \
-	-H "x-goog-api-key: ${GEMINI_API_KEY}" \
+curl -sS "$GEMINI_URL" \
 	-H 'Content-Type: application/json' \
+	-H "x-goog-api-key: ${GEMINI_API_KEY}" \
 	-d "$GEMINI_JSON" \
 	--no-buffer \
 | grep --line-buffered '^data: ' \
