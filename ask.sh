@@ -155,10 +155,10 @@ RAW_USER_PROMPT="$*"
 test ! -t 0 && \
 INPUT_ITEMS=$(jq -cn \
 	--argjson arr "$INPUT_ITEMS" \
-	--arg data "$(cat)" \
+	--arg stdin "$(cat)" \
 	'$arr + [{
 		"type": "text",
-		"text": $data
+		"text": $stdin
 	}]'
 )
 
