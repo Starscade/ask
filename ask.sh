@@ -38,9 +38,7 @@ while [ $# -gt 0 ]; do
 			'    --forget           Clear chat history' \
 			'    --echo             Print the last AI response' \
 			'    --dotenv FILE      Load environment variables from FILE' \
-			'    --model MODEL      Set Gemini model name' \
 			'    --persona TEXT     Set system instruction persona' \
-			'    --intellect LEVEL  Set thinking level (low/high)' \
 			'    -r, --related      Preserve topic history / context' \
 			'    -a, --attach FILE  Attach text or image file' \
 			'    -m, --modality     Set response modality' \
@@ -77,19 +75,14 @@ while [ $# -gt 0 ]; do
 				set +a
 			} || give_up
 			;;
-		--model)
+		--modality | -m)
 			shift
-			GEMINI_MODEL="$1"
+			MODALITY="$1"
 			shift
 			;;
 		--persona)
 			shift
 			PERSONA="$1"
-			shift
-			;;
-		--intellect)
-			shift
-			GEMINI_INTELLECT="$1"
 			shift
 			;;
 		--related | -r)
@@ -131,11 +124,6 @@ while [ $# -gt 0 ]; do
 					)
 					;;
 			esac
-			;;
-		--modality | -m)
-			shift
-			MODALITY="$1"
-			shift
 			;;
 		--)
 			shift
