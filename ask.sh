@@ -49,11 +49,18 @@ while [ $# -gt 0 ]; do
 		--install)
 			mkdir -pv "$LOCAL_BIN_DIR"
 			cp -iv "$0" "$INSTALL_PATH"
-			chmod -v +x "$INSTALL_PATH"
+			chmod -v 0755 "$INSTALL_PATH"
 			exit
 			;;
 		--uninstall)
 			rm -iv "$INSTALL_PATH" "$TRANSCRIPT_FILE"
+			exit
+			;;
+		--update)
+			curl -fLsS \
+				'https://raw.githubusercontent.com/Starscade/ask/main/ask.sh' \
+				-o "$INSTALL_PATH"
+			chmod -v 0755 "$INSTALL_PATH"
 			exit
 			;;
 		--forget)
