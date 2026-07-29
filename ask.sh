@@ -104,23 +104,34 @@ while [ $# -gt 0 ]; do
 			shift
 			ATTACH_FILE="$1"
 			shift
-			test -f "$ATTACH_FILE" || give_up "Attached file not found: $ATTACH_FILE"
+			test -s "$ATTACH_FILE" || give_up "Attached file not found: $ATTACH_FILE"
 			MIME_TYPE=$(file -b --mime-type "$ATTACH_FILE" 2>/dev/null || echo "text/plain")
 			case "$MIME_TYPE" in
 				image/*)
 					FILE_DATA=$(base64 < "$ATTACH_FILE" | tr -d '\n')
+					TMP_IMG=$(mktemp)
+					INPUT_ITEMS=$(jq -cn \
+						--argjson arr "$INPUT_ITEMS" \
+						--rawfile data "$TMP_IMG" \
+						--arg mime "$MIME_TYPE" \
+						'$arr + [{
+							"type": "image",
+							"data": $data,
+							"mime_type": $mime
+						}]'
+					)
+					rm "$TMP_IMG"
+					;;
+				*)
+					FILE_DATA="$(jq -Rrs . "$ATTACH_FILE")"
 					INPUT_ITEMS=$(jq -cn \
 						--argjson arr "$INPUT_ITEMS" \
 						--arg data "$FILE_DATA" \
-						--arg mime "$MIME_TYPE" \
-						'$arr + [{"type": "image", "data": $data, "mime_type": $mime, "resolution": "low"}]')
-					;;
-				*)
-					INPUT_ITEMS=$(jq -cn \
-						--argjson arr "$INPUT_ITEMS" \
-						--rawfile data "$ATTACH_FILE" \
-						--arg mime "$MIME_TYPE" \
-						'$arr + [{"type": "text", "text": $data}]')
+						'$arr + [{
+							"type": "text",
+							"text": $data
+						}]'
+					)
 					;;
 			esac
 			;;
@@ -143,22 +154,35 @@ while [ $# -gt 0 ]; do
 done
 
 RAW_USER_PROMPT="$*"
-test ! -t 0 && RAW_USER_PROMPT="${RAW_USER_PROMPT}\n\n$(cat)"
 
-# Append text prompt if present
-test -n "$RAW_USER_PROMPT" && INPUT_ITEMS=$(jq -cn \
+test ! -t 0 && \
+INPUT_ITEMS=$(jq -cn \
+	--argjson arr "$INPUT_ITEMS" \
+	--arg data "$(cat)" \
+	'$arr + [{
+		"type": "text",
+		"text": $data
+	}]'
+)
+
+test -n "$RAW_USER_PROMPT" && \
+INPUT_ITEMS=$(jq -cn \
 	--argjson arr "$INPUT_ITEMS" \
 	--arg prompt "$RAW_USER_PROMPT" \
-	'$arr + [{"type": "text", "text": $prompt}]')
+	'$arr + [{
+		"type": "text",
+		"text": $prompt
+	}]'
+)
 
-test "$(echo "$INPUT_ITEMS" | jq 'length // 0')" -eq 0 \
+test "$(printf '%s' "$INPUT_ITEMS" | cat -v | jq 'length // 0')" -eq 0 \
 	&& give_up "You didn't ask anything or attach any files."
 
 test -z "$GEMINI_API_KEY" \
 	&& give_up "\033[1mGEMINI_API_KEY\033[0m not set."
 
 TOPIC_ID=""
-test -f "$TRANSCRIPT_FILE" \
+test -s "$TRANSCRIPT_FILE" \
 	&& TOPIC_ID="$(get_topic_id "$TRANSCRIPT_FILE")"
 GEMINI_URL='https://generativelanguage.googleapis.com/v1beta/interactions?alt=sse'
 GEMINI_JSON=$(jq -cn \
