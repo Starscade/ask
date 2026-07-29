@@ -57,10 +57,8 @@ while [ $# -gt 0 ]; do
 			exit
 			;;
 		--update)
-			curl -fLsS \
-				'https://raw.githubusercontent.com/Starscade/ask/main/ask.sh' \
-				-o "$INSTALL_PATH"
-			chmod -v 0755 "$INSTALL_PATH"
+			curl -fLsSo "$(command -v "$0")" \
+				'https://ask.angus.sh/ask.sh'
 			exit
 			;;
 		--forget)
