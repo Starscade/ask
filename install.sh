@@ -63,8 +63,10 @@ while [ $# -gt 0 ]; do
 			exit
 			;;
 		--update)
+			echo Installing...
 			curl -fLsSo "$(command -v "$0")" \
-				'https://ask.angus.sh/install.sh'
+				'https://ask.angus.sh/install.sh' \
+				&& echo "$($(command -v "$0") --version)"
 			exit
 			;;
 		--forget)
