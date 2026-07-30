@@ -44,7 +44,7 @@ while [ $# -gt 0 ]; do
 			'    --uninstall        Remove installed script and transcript' \
 			'    --forget           Clear chat history' \
 			'    --echo             Print the last AI response' \
-			'    --dotenv FILE      Load environment variables from FILE' \
+			'    --env FILE         Load environment variables from FILE' \
 			'    --persona TEXT     Set system instruction persona' \
 			'    -r, --related      Preserve topic history / context' \
 			'    -a, --attach FILE  Attach text or image file' \
@@ -76,7 +76,7 @@ while [ $# -gt 0 ]; do
 				| jq -jr '.delta.text // empty'
 			exit
 			;;
-		--dotenv)
+		--env)
 			shift
 			DOTENV_FILE="$1"
 			shift
