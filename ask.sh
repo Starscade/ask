@@ -45,7 +45,7 @@ while [ $# -gt 0 ]; do
 			exit
 			;;
 		--version)
-			VERSION='v0.1.0'
+			VERSION='v0.1.0 (main)'
 			echo "$VERSION"
 			exit
 			;;
