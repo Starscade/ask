@@ -31,14 +31,20 @@ check_command jq
 
 DEFAULT_TRANSCRIPT_FILE="/tmp/$(basename "$0")-transcript.json"
 TRANSCRIPT_FILE=${TRANSCRIPT_FILE:-"$DEFAULT_TRANSCRIPT_FILE"}
-PERSONA=${PERSONA:-'You respond exclusively in plaintext code snippets that can be executed (or compiled) as is. Never format your responses using markdown. If no language is specified, write code in POSIX-compliant sh (or PostgreSQL if dealing with SQL). Always use the most portable syntax. Otherwise, write the code in the language that the user mentions.'}
+DEFAULT_PERSONA='You respond exclusively in plaintext code snippets
+that can be executed (or compiled) as is.
+Never format your responses using markdown. If no language is specified,
+write code in POSIX-compliant sh (or PostgreSQL if dealing with SQL).
+Always use the most portable syntax.
+Otherwise, write the code in the language that the user mentions.'
+PERSONA=${PERSONA:-"$DEFAULT_PERSONA"}
 GEMINI_INTELLECT=${GEMINI_INTELLECT:-'low'}
 GEMINI_MODEL=${GEMINI_MODEL:-'gemini-flash-lite-latest'}
 
 INPUT_ITEMS='[]'
 
 test -f "$TRANSCRIPT_FILE" \
-	|| touch "$TRANSCRIPT_FILE"
+|| touch "$TRANSCRIPT_FILE"
 
 while [ $# -gt 0 ]; do
 	case "$1" in
@@ -113,7 +119,10 @@ while [ $# -gt 0 ]; do
 			ATTACH_FILE="$1"
 			shift
 			test -s "$ATTACH_FILE" || give_up "Attached file not found: $ATTACH_FILE"
-			MIME_TYPE=$(file -b --mime-type "$ATTACH_FILE" 2>/dev/null || echo "text/plain")
+			MIME_TYPE=$(
+				file -b --mime-type "$ATTACH_FILE" 2>/dev/null \
+				|| echo "text/plain"
+			)
 			case "$MIME_TYPE" in
 				image/*)
 					FILE_DATA=$(base64 < "$ATTACH_FILE" | tr -d '\n')
@@ -188,7 +197,8 @@ test -z "$GEMINI_API_KEY" \
 TOPIC_ID=""
 test -s "$TRANSCRIPT_FILE" \
 	&& TOPIC_ID="$(get_topic_id "$TRANSCRIPT_FILE")"
-GEMINI_URL='https://generativelanguage.googleapis.com/v1beta/interactions?alt=sse'
+GEMINI_HOST='generativelanguage.googleapis.com'
+GEMINI_URL="https://${GEMINI_HOST}/v1beta/interactions?alt=sse"
 GEMINI_JSON=$(jq -cn \
 	--arg intellect "${GEMINI_INTELLECT:-low}" \
 	--arg modality "${GEMINI_MODALITY:-text}" \
@@ -212,7 +222,9 @@ GEMINI_JSON=$(jq -cn \
 			{ type: "google_search" },
 			{ type: "url_context" }
 		]
-	} + if $has_prev and $prev_id != "" then {previous_interaction_id: $prev_id} else {} end'
+	} + if $has_prev and $prev_id != "" then {
+		previous_interaction_id: $prev_id
+	} else {} end'
 )
 
 curl -sS "$GEMINI_URL" \
