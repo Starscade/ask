@@ -44,6 +44,11 @@ while [ $# -gt 0 ]; do
 			echo
 			exit
 			;;
+		--version)
+			VERSION='v0.1.0'
+			echo "$VERSION"
+			exit
+			;;
 		--install)
 			LOCAL_BIN_DIR=~/.local/bin
 			INSTALL_PATH="${LOCAL_BIN_DIR}/ask"
