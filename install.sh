@@ -1,9 +1,11 @@
 #!/bin/sh
 
 test $(basename "$0") = 'install.sh' && {
-	LOCAL_BIN_DIR=~/.local/bin
-	INSTALL_PATH="${LOCAL_BIN_DIR}/ask"
-	mkdir -pv "$LOCAL_BIN_DIR" \
+	INSTALL_DIR=~/.local/bin
+	test -n "$1" && test -d "$1" \
+		&& INSTALL_DIR="$1"
+	INSTALL_PATH="${INSTALL_DIR}/ask"
+	mkdir -pv "$INSTALL_DIR" \
 	&& cp -iv "$0" "$INSTALL_PATH" \
 	&& chmod -v 0755 "$INSTALL_PATH"
 	exit
