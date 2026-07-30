@@ -29,12 +29,16 @@ give_up() {
 check_command curl
 check_command jq
 
-TRANSCRIPT_FILE=/tmp/transcript.json
+DEFAULT_TRANSCRIPT_FILE="/tmp/$(basename "$0")-transcript.json"
+TRANSCRIPT_FILE=${TRANSCRIPT_FILE:-"$DEFAULT_TRANSCRIPT_FILE"}
 PERSONA=${PERSONA:-'You respond exclusively in plaintext code snippets that can be executed (or compiled) as is. Never format your responses using markdown. If no language is specified, write code in POSIX-compliant sh (or PostgreSQL if dealing with SQL). Always use the most portable syntax. Otherwise, write the code in the language that the user mentions.'}
 GEMINI_INTELLECT=${GEMINI_INTELLECT:-'low'}
 GEMINI_MODEL=${GEMINI_MODEL:-'gemini-flash-lite-latest'}
 
 INPUT_ITEMS='[]'
+
+test -f "$TRANSCRIPT_FILE" \
+	|| touch "$TRANSCRIPT_FILE"
 
 while [ $# -gt 0 ]; do
 	case "$1" in
