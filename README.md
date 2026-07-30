@@ -5,14 +5,15 @@ A POSIX-compliant shell script for Google Gemini.
 ---
 ### USAGE
 
-```sh
-export GEMINI_API_KEY= # Your key ...
-ask 'Ahoy!'
-```
-
 ###### INSTALL
 ```sh
 curl -fLsSo ~/.local/bin/ask ask.angus.sh/install.sh
+```
+
+###### FIRST RUN
+```sh
+export GEMINI_API_KEY= # Your key ...
+ask 'Ahoy!'
 ```
 
 ###### PRESERVE CONTEXT
