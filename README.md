@@ -12,7 +12,7 @@ ask.sh 'Ahoy!'
 
 ###### INSTALL
 ```sh
-curl -fLsS ask.angus.sh/install.sh | sh
+curl -fLsSo ~/.local/bin/ask ask.angus.sh/install.sh
 ```
 
 ###### PRESERVE CONTEXT

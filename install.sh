@@ -64,7 +64,7 @@ while [ $# -gt 0 ]; do
 			;;
 		--update)
 			curl -fLsSo "$(command -v "$0")" \
-				'https://ask.angus.sh/ask.sh'
+				'https://ask.angus.sh/install.sh'
 			exit
 			;;
 		--forget)
