@@ -1,5 +1,14 @@
 #!/bin/sh
 
+test $(basename "$0") = 'install.sh' && {
+	LOCAL_BIN_DIR=~/.local/bin
+	INSTALL_PATH="${LOCAL_BIN_DIR}/ask"
+	mkdir -pv "$LOCAL_BIN_DIR" \
+	&& cp -iv "$0" "$INSTALL_PATH" \
+	&& chmod -v 0755 "$INSTALL_PATH"
+	exit
+}
+
 check_command() {
 	command -v "$1" > /dev/null 2>&1 \
 		|| give_up "\033[1m${1}\033[0m not found."
@@ -47,14 +56,6 @@ while [ $# -gt 0 ]; do
 		--version)
 			VERSION='v0.1.0 (main)'
 			echo "$VERSION"
-			exit
-			;;
-		--install)
-			LOCAL_BIN_DIR=~/.local/bin
-			INSTALL_PATH="${LOCAL_BIN_DIR}/ask"
-			mkdir -pv "$LOCAL_BIN_DIR" \
-			&& cp -iv "$0" "$INSTALL_PATH" \
-			&& chmod -v 0755 "$INSTALL_PATH"
 			exit
 			;;
 		--uninstall)
