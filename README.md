@@ -7,7 +7,7 @@ A POSIX-compliant shell script for Google Gemini.
 
 ```sh
 export GEMINI_API_KEY= # Your key ...
-ask.sh 'Ahoy!'
+ask 'Ahoy!'
 ```
 
 ###### INSTALL
