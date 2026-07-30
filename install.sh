@@ -42,7 +42,7 @@ while [ $# -gt 0 ]; do
 			printf "\n  \033[1mUSAGE\033[0m: ask [flags] [prompt]\n"
 			printf "  \033[1mFLAGS\033[0m:\n\n"
 			printf "%s\n" \
-			'    --install          Install script to ~/.local/bin/ask' \
+			'    --install [DIR]    Install to DIR (default ~/.local/bin)' \
 			'    --uninstall        Remove installed script and transcript' \
 			'    --forget           Clear chat history' \
 			'    --echo             Print the last AI response' \
