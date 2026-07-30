@@ -52,9 +52,9 @@ while [ $# -gt 0 ]; do
 		--install)
 			LOCAL_BIN_DIR=~/.local/bin
 			INSTALL_PATH="${LOCAL_BIN_DIR}/ask"
-			mkdir -pv "$LOCAL_BIN_DIR"
-			cp -iv "$0" "$INSTALL_PATH"
-			chmod -v 0755 "$INSTALL_PATH"
+			mkdir -pv "$LOCAL_BIN_DIR" \
+			&& cp -iv "$0" "$INSTALL_PATH" \
+			&& chmod -v 0755 "$INSTALL_PATH"
 			exit
 			;;
 		--uninstall)
