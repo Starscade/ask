@@ -1,6 +1,7 @@
 # Ask
 
 A POSIX-compliant shell script for Google Gemini.
+[![Download](https://img.shields.io/badge/DOWNLOAD-blue?style=flat&logo=github)](https://ask.angus.sh/install.sh)
 
 ---
 ### USAGE
