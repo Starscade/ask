@@ -26,6 +26,10 @@ give_up() {
 	&& exit 1
 }
 
+print_ok() {
+	printf "\n \033[1;32mOK\033[0m  ${1}\n"
+}
+
 check_command curl
 check_command jq
 
@@ -75,10 +79,10 @@ while [ $# -gt 0 ]; do
 			exit
 			;;
 		--update)
-			echo Installing...
 			curl -fLsSo "$(command -v "$0")" \
 				'https://ask.angus.sh/install.sh' \
-				&& echo "$($(command -v "$0") --version)"
+				&& print_ok "\033[1m$($(command -v "$0") --version)\033[0m" \
+				|| give_up 'Upgrade failed!'
 			exit
 			;;
 		--forget)
