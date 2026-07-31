@@ -186,7 +186,7 @@ INPUT_ITEMS=$(jq -cn \
 		"type": "text",
 		"text": $prompt
 	}]'
-) || exit 1
+)
 
 test "$(printf '%s' "$INPUT_ITEMS" | cat -v | jq 'length // 0')" -eq 0 \
 	&& give_up "You didn't ask anything or attach any files."
