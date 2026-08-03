@@ -174,6 +174,9 @@ while [ $# -gt 0 ]; do
 	esac
 done
 
+test -z "$GEMINI_API_KEY" \
+	&& panic "\033[1mGEMINI_API_KEY\033[0m not set."
+
 RAW_USER_PROMPT="$*"
 
 test ! -t 0 && \
@@ -198,9 +201,6 @@ INPUT_ITEMS=$(jq -cn \
 
 test "$(printf '%s' "$INPUT_ITEMS" | cat -v | jq 'length // 0')" -eq 0 \
 	&& panic "You didn't ask anything or attach any files."
-
-test -z "$GEMINI_API_KEY" \
-	&& panic "\033[1mGEMINI_API_KEY\033[0m not set."
 
 TOPIC_ID=""
 test -s "$TRANSCRIPT_FILE" \
