@@ -90,43 +90,37 @@ while [ $# -gt 0 ]; do
 				|| panic 'Upgrade failed!'
 			exit
 			;;
-		--forget)
-			rm -v "$TRANSCRIPT_FILE"
-			exit
+		--env)
+			DOTENV_FILE="$2"
+			test -s "$DOTENV_FILE" && {
+				set -a
+				. "$DOTENV_FILE"
+				set +a
+			} || panic "Failed to load \"${DOTENV_FILE}\"."
+			shift
 			;;
 		--echo)
 			sed '$d' "$TRANSCRIPT_FILE" \
 				| jq -jr '.delta.text // empty'
 			exit
 			;;
-		--env)
-			shift
-			DOTENV_FILE="$1"
-			shift
-			test -s "$DOTENV_FILE" && {
-				set -a
-				. "$DOTENV_FILE"
-				set +a
-			} || panic "Failed to load \"${DOTENV_FILE}\"."
+		--forget)
+			rm -v "$TRANSCRIPT_FILE"
+			exit
 			;;
 		--modality | -m)
-			shift
-			MODALITY="$1"
+			MODALITY="$2"
 			shift
 			;;
 		--persona)
-			shift
-			PERSONA="$1"
+			PERSONA="$2"
 			shift
 			;;
 		--related | -r)
 			PRESERVE_TOPIC=true
-			shift
 			;;
 		--attach | -a)
-			shift
-			ATTACH_FILE="$1"
-			shift
+			ATTACH_FILE="$2"
 			test -s "$ATTACH_FILE" || panic "Attached file not found: $ATTACH_FILE"
 			MIME_TYPE=$(
 				file -b --mime-type "$ATTACH_FILE" 2>/dev/null \
@@ -161,6 +155,7 @@ while [ $# -gt 0 ]; do
 					)
 					;;
 			esac
+			shift
 			;;
 		--)
 			shift
