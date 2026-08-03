@@ -94,7 +94,7 @@ while [ $# -gt 0 ]; do
 			exit
 			;;
 		--echo)
-			head -n -1 "$TRANSCRIPT_FILE" \
+			sed '$d' "$TRANSCRIPT_FILE" \
 				| jq -jr '.delta.text // empty'
 			exit
 			;;
