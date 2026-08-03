@@ -14,7 +14,7 @@ test $(basename "$0") = 'install.sh' && {
 trap 'printf "\n"' EXIT INT TERM
 
 _print() {
-	printf "\n \033[1;${2}m${1}\033[0m${3}\n\n"
+	printf "\n \033[1;${2}m${1}\033[0m${3}\n"
 }
 
 check_command() {
@@ -72,12 +72,11 @@ while [ $# -gt 0 ]; do
 			'    -a, --attach FILE  Attach text or image file' \
 			'    -m, --modality     Set response modality' \
 			'    --help             Display this help message'
-			echo
 			exit
 			;;
 		--version)
 			VERSION='v0.1.0 (main)'
-			echo "$VERSION"
+			printf '%s' "$VERSION"
 			exit
 			;;
 		--uninstall)
@@ -131,7 +130,7 @@ while [ $# -gt 0 ]; do
 			test -s "$ATTACH_FILE" || panic "Attached file not found: $ATTACH_FILE"
 			MIME_TYPE=$(
 				file -b --mime-type "$ATTACH_FILE" 2>/dev/null \
-				|| echo "text/plain"
+				|| printf '%s' 'text/plain'
 			)
 			case "$MIME_TYPE" in
 				image/*)
