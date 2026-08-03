@@ -11,6 +11,8 @@ test $(basename "$0") = 'install.sh' && {
 	exit
 }
 
+trap 'printf "\n"' EXIT INT TERM
+
 _print() {
 	printf "\n \033[1;${2}m${1}\033[0m${3}\n\n"
 }
@@ -246,5 +248,3 @@ curl -sS "$GEMINI_URL" \
 | jq --unbuffered -ej \
 	'(.delta.text // .error.message) // empty' \
 	2>/dev/null
-
-printf "\n"
