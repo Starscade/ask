@@ -11,9 +11,13 @@ test $(basename "$0") = 'install.sh' && {
 	exit
 }
 
+_print() {
+	printf "\n \033[1;${2}m${1}\033[0m${3}\n\n"
+}
+
 check_command() {
 	command -v "$1" > /dev/null 2>&1 \
-		|| give_up "\033[1m${1}\033[0m not found."
+		|| panic "\033[1m${1}\033[0m not found."
 }
 
 get_topic_id() {
@@ -21,13 +25,13 @@ get_topic_id() {
 	| jq -r .interaction.id
 }
 
-give_up() {
-	printf "\n \033[1;31mERR\033[0m: ${1}\n\n" \
-	&& exit 1
+panic() {
+	_print ERR 31 ": ${1}"
+	exit 1
 }
 
 print_ok() {
-	printf "\n \033[1;32mOK\033[0m  ${1}\n"
+	_print OK 32 " ${1}"
 }
 
 check_command curl
@@ -82,7 +86,7 @@ while [ $# -gt 0 ]; do
 			curl -fLsSo "$(command -v "$0")" \
 				'https://ask.angus.sh/install.sh' \
 				&& print_ok "\033[1m$($(command -v "$0") --version)\033[0m" \
-				|| give_up 'Upgrade failed!'
+				|| panic 'Upgrade failed!'
 			exit
 			;;
 		--forget)
@@ -102,7 +106,7 @@ while [ $# -gt 0 ]; do
 				set -a
 				. "$DOTENV_FILE"
 				set +a
-			} || give_up
+			} || panic
 			;;
 		--modality | -m)
 			shift
@@ -122,7 +126,7 @@ while [ $# -gt 0 ]; do
 			shift
 			ATTACH_FILE="$1"
 			shift
-			test -s "$ATTACH_FILE" || give_up "Attached file not found: $ATTACH_FILE"
+			test -s "$ATTACH_FILE" || panic "Attached file not found: $ATTACH_FILE"
 			MIME_TYPE=$(
 				file -b --mime-type "$ATTACH_FILE" 2>/dev/null \
 				|| echo "text/plain"
@@ -193,10 +197,10 @@ INPUT_ITEMS=$(jq -cn \
 )
 
 test "$(printf '%s' "$INPUT_ITEMS" | cat -v | jq 'length // 0')" -eq 0 \
-	&& give_up "You didn't ask anything or attach any files."
+	&& panic "You didn't ask anything or attach any files."
 
 test -z "$GEMINI_API_KEY" \
-	&& give_up "\033[1mGEMINI_API_KEY\033[0m not set."
+	&& panic "\033[1mGEMINI_API_KEY\033[0m not set."
 
 TOPIC_ID=""
 test -s "$TRANSCRIPT_FILE" \
