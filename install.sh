@@ -246,3 +246,5 @@ curl -sS "$GEMINI_URL" \
 | jq --unbuffered -ej \
 	'(.delta.text // .error.message) // empty' \
 	2>/dev/null
+
+printf "\n"
