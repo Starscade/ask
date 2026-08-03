@@ -106,7 +106,7 @@ while [ $# -gt 0 ]; do
 				set -a
 				. "$DOTENV_FILE"
 				set +a
-			} || panic
+			} || panic "Failed to load \"${DOTENV_FILE}\"."
 			;;
 		--modality | -m)
 			shift
