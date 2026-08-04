@@ -78,7 +78,7 @@ while [ $# -gt 0 ]; do
 			exit
 			;;
 		--version)
-			VERSION='v0.1.0 (main)'
+			VERSION='v0.1.21 (main)'
 			printf '%s' "$VERSION"
 			exit
 			;;
