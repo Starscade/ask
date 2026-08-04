@@ -2,9 +2,9 @@
 
 BASENAME="${0##*/}"
 CMD_NAME=ask
+INSTALL_DIR="${HOME}/.local/bin"
 
 test "$BASENAME" = 'install.sh' && {
-	INSTALL_DIR="${HOME}/.local/bin"
 	test -n "$1" && test -d "$1" \
 		&& INSTALL_DIR="$1"
 	INSTALL_PATH="${INSTALL_DIR}/${CMD_NAME}"
