@@ -1,12 +1,13 @@
 #!/bin/sh
 
 BASENAME="${0##*/}"
+CMD_NAME=ask
 
 test "$BASENAME" = 'install.sh' && {
 	INSTALL_DIR="${HOME}/.local/bin"
 	test -n "$1" && test -d "$1" \
 		&& INSTALL_DIR="$1"
-	INSTALL_PATH="${INSTALL_DIR}/ask"
+	INSTALL_PATH="${INSTALL_DIR}/${CMD_NAME}"
 	mkdir -p "$INSTALL_DIR" \
 	&& cp -i "$0" "$INSTALL_PATH" \
 	&& chmod -v 0755 "$INSTALL_PATH"
@@ -61,10 +62,10 @@ test -f "$TRANSCRIPT_FILE" \
 while [ $# -gt 0 ]; do
 	case "$1" in
 		--help | -h)
-			printf "\n  \033[1mUSAGE\033[0m: ask [flags] [prompt]\n"
+			printf "\n  \033[1mUSAGE\033[0m: ${CMD_NAME} [flags] [prompt]\n"
 			printf "  \033[1mFLAGS\033[0m:\n\n"
 			printf "%s\n" \
-			'    --install [DIR]    Install to DIR (default ~/.local/bin)' \
+			"    --install [DIR]    Install to DIR (default ${INSTALL_DIR})" \
 			'    --uninstall        Remove installed script and transcript' \
 			'    --forget           Clear chat history' \
 			'    --echo             Print the last AI response' \
@@ -87,7 +88,7 @@ while [ $# -gt 0 ]; do
 			;;
 		--update)
 			curl -fLsSo "$(command -v "$0")" \
-				'https://ask.angus.sh/install.sh' \
+				"https://${CMD_NAME}.angus.sh/install.sh" \
 				&& print_ok "\033[1m$($(command -v "$0") --version)\033[0m" \
 				|| panic 'Upgrade failed!'
 			exit
