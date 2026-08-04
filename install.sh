@@ -118,6 +118,7 @@ while [ $# -gt 0 ]; do
 			;;
 		--related | -r)
 			PRESERVE_TOPIC=true
+			shift
 			;;
 		--attach | -a)
 			ATTACH_FILE="$2"
