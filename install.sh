@@ -1,7 +1,9 @@
 #!/bin/sh
 
-test $(basename "$0") = 'install.sh' && {
-	INSTALL_DIR=~/.local/bin
+BASENAME="${0##*/}"
+
+test "$BASENAME" = 'install.sh' && {
+	INSTALL_DIR="${HOME}/.local/bin"
 	test -n "$1" && test -d "$1" \
 		&& INSTALL_DIR="$1"
 	INSTALL_PATH="${INSTALL_DIR}/ask"
@@ -39,7 +41,7 @@ print_ok() {
 check_command curl
 check_command jq
 
-DEFAULT_TRANSCRIPT_FILE="/tmp/$(basename "$0")-transcript.json"
+DEFAULT_TRANSCRIPT_FILE="/tmp/${BASENAME}-transcript.json"
 TRANSCRIPT_FILE=${TRANSCRIPT_FILE:-"$DEFAULT_TRANSCRIPT_FILE"}
 DEFAULT_PERSONA='You respond exclusively in plaintext code snippets
 that can be executed (or compiled) as is.
