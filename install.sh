@@ -61,22 +61,6 @@ test -f "$TRANSCRIPT_FILE" \
 
 while [ $# -gt 0 ]; do
 	case "$1" in
-		--help | -h)
-			printf "\n  \033[1mUSAGE\033[0m: ${CMD_NAME} [flags] [prompt]\n"
-			printf "  \033[1mFLAGS\033[0m:\n\n"
-			printf "%s\n" \
-			"    --install [DIR]    Install to DIR (default ${INSTALL_DIR})" \
-			'    --uninstall        Remove installed script and transcript' \
-			'    --forget           Clear chat history' \
-			'    --echo             Print the last AI response' \
-			'    --env FILE         Load environment variables from FILE' \
-			'    --persona TEXT     Set system instruction persona' \
-			'    -r, --related      Preserve topic history / context' \
-			'    -a, --attach FILE  Attach text or image file' \
-			'    -m, --modality     Set response modality' \
-			'    --help             Display this help message'
-			exit
-			;;
 		--version)
 			VERSION='v0.1.22 (main) [c745458]'
 			printf '%s' "$VERSION"
@@ -91,6 +75,10 @@ while [ $# -gt 0 ]; do
 				"https://${CMD_NAME}.angus.sh/install.sh" \
 				&& print_ok "\033[1m$($(command -v "$0") --version)\033[0m" \
 				|| panic 'Upgrade failed!'
+			exit
+			;;
+		--help)
+			curl -LsS "https://${CMD_NAME}.angus.sh/README.md" 2>/dev/null
 			exit
 			;;
 		--env)
