@@ -1,6 +1,6 @@
 # Ask
 
-A POSIX-compliant shell script for Google Gemini.
+A proof-of-concept Gemini chat client written entirely in sh.
 [[download](https://ask.angus.sh/install.sh)]
 
 ---
